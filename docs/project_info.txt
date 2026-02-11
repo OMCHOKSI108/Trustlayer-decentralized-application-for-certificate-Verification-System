@@ -1,0 +1,231 @@
+# TrustLayer - Blockchain-Based Secure Certificate Verification System
+
+## Project Overview
+
+TrustLayer solves the critical problem of certificate fraud in academic and professional environments. By storing a unique SHA-256 hash of each certificate on the Ethereum blockchain, it creates an immutable record that can be independently verified by anyone — employers, universities, or regulatory bodies — without relying on a central authority.
+
+The platform provides a seamless workflow: institutions issue certificates through the web interface, the system computes a cryptographic hash and records it on-chain, and verifiers can instantly authenticate any certificate by uploading it for hash comparison against the blockchain record.
+
+## Key Features
+
+| Feature | Description |
+|---|---|
+| **Blockchain Integrity** | Certificate hashes stored on Ethereum Sepolia testnet — tamper-proof and globally verifiable |
+| **Role-Based Access Control** | Three distinct roles: **Admin**, **Institution**, and **Verifier** with scoped permissions |
+| **Certificate Lifecycle** | Full issue → verify → revoke workflow with on-chain event logging |
+| **Email Verification** | Account activation via email link to prevent unauthorized registrations |
+| **Real-Time Verification** | Upload a certificate and get instant blockchain-backed authenticity confirmation |
+| **Verification History** | Complete audit trail of all verification attempts |
+| **Responsive UI** | Modern, mobile-friendly interface built with React and Tailwind CSS |
+
+### Role Breakdown
+
+| Role | Capabilities |
+|---|---|
+| **Admin** | Approve/reject institution registrations, manage all users, view all certificates |
+| **Institution** | Issue new certificates, view issued certificates, revoke certificates |
+| **Verifier / Employer** | Upload and verify certificate authenticity, view verification history |
+
+## System Architecture
+
+### Data Flow — Certificate Issuance & Verification
+
+1. **Issuance Flow**:
+   - Institution uploads certificate file
+   - Backend computes SHA-256 hash
+   - Hash stored on blockchain via smart contract
+   - Certificate metadata saved in MongoDB
+
+2. **Verification Flow**:
+   - User uploads certificate for verification
+   - Backend computes hash of uploaded file
+   - Queries blockchain directly for hash match
+   - Returns verification result (authentic/tampered/revoked/not found)
+
+### Architecture Layers
+
+- **Client Layer**: React 18 frontend with authentication context
+- **Server Layer**: Express.js REST API with JWT auth and role middleware
+- **Data Layer**: MongoDB Atlas for persistent storage
+- **Blockchain Layer**: Ethereum Sepolia with custom smart contract
+
+## Tech Stack
+
+### Frontend
+- **React 18** - Component-based UI framework
+- **Vite 5** - Fast build tool and dev server
+- **Tailwind CSS 3** - Utility-first CSS framework
+- **React Router 6** - Client-side routing
+- **Axios** - HTTP client for API requests
+- **React Hot Toast** - Notification system
+
+### Backend
+- **Node.js 18+** - JavaScript runtime
+- **Express 4** - REST API framework
+- **MongoDB + Mongoose** - Document database and ODM
+- **Ethers.js v6** - Ethereum blockchain interaction
+- **JSON Web Tokens** - Stateless authentication
+- **bcrypt.js** - Password hashing
+- **Multer** - Multipart file upload handling
+- **Nodemailer** - Email verification service
+
+### Blockchain
+- **Solidity 0.8.19** - Smart contract language
+- **Hardhat** - Development & deployment framework
+- **Ethereum Sepolia** - Test network for contract deployment
+
+### DevOps & Hosting
+- **Vercel** - Frontend and backend deployment
+- **MongoDB Atlas** - Cloud-hosted database
+- **QuickNode** - Ethereum RPC provider
+
+## Smart Contract Details
+
+### CertificateRegistry.sol
+- **Functions**:
+  - `issueCertificate(certId, hashValue)` - Registers certificate hash
+  - `verifyCertificateByHash(hashValue)` - Verifies by hash (core function)
+  - `revokeCertificate(certId)` - Marks certificate as revoked
+
+- **Events**:
+  - `CertificateIssued(certId, hashValue, issuer, timestamp)`
+  - `CertificateRevoked(certId, revokedBy, timestamp)`
+
+- **Mappings**:
+  - `certificates` - ID to certificate data
+  - `hashToCertificate` - Hash to certificate data (enables decentralized verification)
+
+## Database Models
+
+### User Model
+- name, email, password, role (admin/university/user)
+- organization, status (pending/approved/rejected)
+- isVerified, verificationToken, verificationTokenExpiry
+
+### Certificate Model
+- certId, sha256Hash, txHash, blockNumber
+- issuedBy (reference to User), revoked
+
+### Verification Model
+- fileHash, verifiedBy (reference to User)
+- result (authentic/tampered/not_found/revoked)
+
+## API Endpoints
+
+### Authentication
+- POST /api/auth/register
+- POST /api/auth/login
+- GET /api/auth/verify-email/:token
+- GET /api/auth/profile
+
+### Certificates
+- POST /api/certificates/issue
+- GET /api/certificates/my
+- DELETE /api/certificates/:id/revoke
+
+### Verification
+- POST /api/verify
+- GET /api/verify/history
+
+### Admin
+- GET /api/admin/users
+- PUT /api/admin/users/:id/approve
+- PUT /api/admin/users/:id/reject
+- GET /api/admin/certificates
+
+### Health
+- GET /api/health
+
+## Environment Variables Required
+
+# Database
+MONGO_URI="your_mongodb_connection_string"
+
+# Authentication
+JWT_SECRET="a_strong_random_jwt_secret"
+
+# Blockchain (Sepolia Testnet)
+SEPOLIA_RPC_URL="https://your-quicknode-endpoint.quiknode.pro/your_api_key/"
+WALLET_PRIVATE_KEY="your_wallet_private_key"
+
+# Server
+PORT=5000
+CLIENT_URL=http://localhost:5173
+
+# Email (Gmail App Password)
+EMAIL_ID="your_email@gmail.com"
+EMAIL_PASSWORD="your_gmail_app_password"
+
+# Admin Seed
+ADMIN_NAME="Admin"
+ADMIN_EMAIL="admin@trustlayer.com"
+ADMIN_PASSWORD="a_strong_admin_password"
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account
+- QuickNode account
+- MetaMask wallet with Sepolia ETH
+
+### Installation
+1. Clone repository
+2. Install dependencies in backend/, blockchain/, client/
+3. Configure .env file
+4. Deploy smart contract: `cd blockchain && npx hardhat run scripts/deploy.js --network sepolia`
+5. Seed admin: `cd backend && npm run seed:admin`
+6. Start backend: `cd backend && npm run dev`
+7. Start frontend: `cd client && npm run dev`
+
+## Project Structure
+
+```
+Blockchain-Based-Secure-Certificate/
+├── client/                          # React Frontend
+│   ├── src/
+│   │   ├── components/              # Reusable UI components
+│   │   ├── context/                 # AuthContext
+│   │   ├── pages/                   # Application pages
+│   │   └── services/                # API service
+├── backend/                         # Node.js Backend
+│   ├── config/                      # Blockchain & DB config
+│   ├── controllers/                 # Business logic
+│   ├── middleware/                  # Auth & role middleware
+│   ├── models/                      # Mongoose schemas
+│   ├── routes/                      # API routes
+│   └── utils/                       # Hash generator & email
+├── blockchain/                      # Hardhat Smart Contracts
+│   ├── contracts/                   # CertificateRegistry.sol
+│   └── scripts/                     # Deployment script
+└── docs/                           # Documentation
+    ├── api_list.txt                # API endpoints
+    └── project_info.txt            # This file
+```
+
+## Live Demo & Repository
+
+- **Live Demo**: https://trustlayer.vercel.app
+- **Repository**: https://github.com/kaustav3071/Blockchain-Based-Secure-Certificate
+- **Network**: Ethereum Sepolia Testnet
+
+## License
+
+Distributed under the MIT License.
+
+## Security Considerations
+
+- Never commit .env files
+- Use strong JWT secrets
+- Validate all inputs
+- Implement rate limiting
+- Regular security audits
+
+## Future Enhancements
+
+- Gas optimization for contract calls
+- Batch certificate issuance
+- Certificate expiration dates
+- Advanced verification metadata
+- Mobile app development
+- Multi-chain support

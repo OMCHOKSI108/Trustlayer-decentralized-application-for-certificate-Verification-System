@@ -1,0 +1,25 @@
+# TrustLayer API Endpoints
+
+## Authentication
+- POST /api/auth/register - Register a new user
+- POST /api/auth/login - Login and receive JWT
+- GET /api/auth/verify-email/:token - Verify email address
+- GET /api/auth/profile - Get current user profile
+
+## Certificates
+- POST /api/certificates/issue - Issue a new certificate (Institution)
+- GET /api/certificates/my - Get certificates issued by current user
+- DELETE /api/certificates/:id/revoke - Revoke a certificate
+
+## Verification
+- POST /api/verify - Verify a certificate by file upload
+- GET /api/verify/history - Get verification history
+
+## Admin
+- GET /api/admin/users - List all users
+- PUT /api/admin/users/:id/approve - Approve a user
+- PUT /api/admin/users/:id/reject - Reject a user
+- GET /api/admin/certificates - List all certificates
+
+## Health Check
+- GET /api/health - Health check endpoint

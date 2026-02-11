@@ -1,0 +1,17 @@
+{
+  "name": "trustlayer-blockchain",
+  "version": "1.0.0",
+  "description": "Smart contracts for TrustLayer",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run scripts/deploy.js --network sepolia",
+    "test": "npx hardhat test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.22.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1"
+  }
+}
