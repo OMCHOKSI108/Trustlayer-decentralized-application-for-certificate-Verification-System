@@ -11,7 +11,7 @@ const memoryUpload = multer({ storage: multer.memoryStorage(), limits: { fileSiz
 // Get list of approved universities for dropdown
 router.get("/universities", auth, authorize("user", "admin"), getUniversities);
 
-// Verify certificate - user and admin
+// Verify certificate - user and admin (Supports both File Upload and Client-Side Hash)
 router.post("/", auth, authorize("user", "admin"), memoryUpload.single("certificate"), verifyCertificate);
 
 // Get verification history

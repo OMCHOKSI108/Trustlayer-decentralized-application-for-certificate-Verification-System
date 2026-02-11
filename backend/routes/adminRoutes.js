@@ -8,6 +8,7 @@ const {
   updateUniversityStatus,
   deleteUser,
   getAdminStats,
+  recalculateTrustScores,
 } = require("../controllers/adminController");
 
 // All admin routes require admin role
@@ -17,6 +18,7 @@ router.get("/users", getAllUsers);
 router.get("/pending", getPendingUniversities);
 router.get("/stats", getAdminStats);
 router.put("/university/:id", updateUniversityStatus);
+router.post("/trust-scores", recalculateTrustScores);
 router.delete("/user/:id", deleteUser);
 
 module.exports = router;
