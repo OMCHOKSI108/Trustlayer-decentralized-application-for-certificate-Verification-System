@@ -84,6 +84,8 @@ app.get("/", (req, res) => {
         <div class="route"><span class="badge post">POST</span><span class="path">/api/auth/login</span></div>
         <div class="route"><span class="badge get">GET</span><span class="path">/api/auth/verify-email</span></div>
         <div class="route"><span class="badge post">POST</span><span class="path">/api/auth/resend-verification</span></div>
+        <div class="route"><span class="badge post">POST</span><span class="path">/api/auth/forgot-password</span></div>
+        <div class="route"><span class="badge post">POST</span><span class="path">/api/auth/reset-password</span></div>
         <div class="route"><span class="badge get">GET</span><span class="path">/api/auth/me</span><span class="auth-tag">Auth</span></div>
         <div class="route"><span class="badge put">PUT</span><span class="path">/api/auth/profile</span><span class="auth-tag">Auth</span></div>
         <div class="route"><span class="badge put">PUT</span><span class="path">/api/auth/change-password</span><span class="auth-tag">Auth</span></div>

@@ -52,4 +52,41 @@ const sendVerificationEmail = async (to, token) => {
   await transporter.sendMail(mailOptions);
 };
 
-module.exports = { sendVerificationEmail };
+/**
+ * Send an OTP email for password reset.
+ * @param {string} to - recipient email
+ * @param {string} otp - 6-digit OTP
+ */
+const sendOtpEmail = async (to, otp) => {
+  const mailOptions = {
+    from: `"TrustLayer" <${process.env.EMAIL_ID}>`,
+    to,
+    subject: "Password Reset OTP – TrustLayer",
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 520px; margin: 0 auto; padding: 30px; background: #f5f5f7; border-radius: 12px;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h1 style="color: #1d1d1f; font-size: 24px; margin: 0;">TrustLayer</h1>
+          <p style="color: #86868b; font-size: 14px; margin-top: 4px;">Blockchain Certificate Verification</p>
+        </div>
+        <div style="background: #ffffff; padding: 28px; border-radius: 12px;">
+          <h2 style="color: #1d1d1f; font-size: 18px; margin-top: 0;">Password Reset</h2>
+          <p style="color: #424245; font-size: 14px; line-height: 1.6;">
+            You requested a password reset. Use the OTP below to verify your identity:
+          </p>
+          <div style="text-align: center; margin: 28px 0;">
+            <div style="display: inline-block; background: #1d1d1f; color: #f5f5f7; padding: 16px 40px; border-radius: 12px; font-size: 32px; letter-spacing: 8px; font-weight: 700;">
+              ${otp}
+            </div>
+          </div>
+          <p style="color: #86868b; font-size: 12px; line-height: 1.5;">
+            This OTP expires in <strong>10 minutes</strong>. If you didn't request a password reset, you can safely ignore this email.
+          </p>
+        </div>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+module.exports = { sendVerificationEmail, sendOtpEmail };
