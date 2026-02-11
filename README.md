@@ -4,7 +4,7 @@
 
 ### Blockchain-Based Secure Certificate Verification System
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://trustlayer.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://trustlayer-decentralized-applicatio-five.vercel.app)
 [![Ethereum](https://img.shields.io/badge/Network-Sepolia-627EEA?style=for-the-badge&logo=ethereum)](https://sepolia.etherscan.io/)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -13,7 +13,7 @@
 
 **A full-stack decentralized application that leverages Ethereum blockchain technology to provide a secure, tamper-proof, and transparent system for issuing, storing, and verifying academic and professional certificates.**
 
-[Live Demo](https://trustlayer.vercel.app) · [Report Bug](https://github.com/OMCHOKSI108/Blockchain-Based-Secure-Certificate/issues) · [Request Feature](https://github.com/OMCHOKSI108/Blockchain-Based-Secure-Certificate/issues)
+[Live Demo](https://trustlayer-decentralized-applicatio-five.vercel.app) · [Report Bug](https://github.com/OMCHOKSI108/Blockchain-Based-Secure-Certificate/issues) · [Request Feature](https://github.com/OMCHOKSI108/Blockchain-Based-Secure-Certificate/issues)
 
 </div>
 
@@ -363,7 +363,8 @@ npm run dev
 # App opens at http://localhost:5173
 ```
 
-> **Production:** The app is deployed at **[https://trustlayer.vercel.app](https://trustlayer.vercel.app)**
+> **Production:** The app is deployed at **[https://trustlayer-decentralized-applicatio-five.vercel.app](https://trustlayer-decentralized-applicatio-five.vercel.app)**
+> **Backend API:** Available at **[https://trustlayer-decentralized-applicatio.vercel.app](https://trustlayer-decentralized-applicatio.vercel.app)**
 
 ---
 
@@ -426,7 +427,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <div align="center">
 
-**[Live Demo](https://trustlayer.vercel.app)** · **[GitHub Repository](https://github.com/OMCHOKSI108/Blockchain-Based-Secure-Certificate)**
+**[Live Demo](https://trustlayer-decentralized-applicatio-five.vercel.app)** · **[GitHub Repository](https://github.com/OMCHOKSI108/Blockchain-Based-Secure-Certificate)**
 
 Built with blockchain technology for a fraud-free future.
 
