@@ -42,6 +42,7 @@ const issueCertificate = async (req, res) => {
       blockNumber: receipt.blockNumber,
       issuedBy: req.user._id,
       qrCode: qrImage,
+      studentName: req.body.studentName || null,
       expiryDate: req.body.expiryDate || null,
     });
 

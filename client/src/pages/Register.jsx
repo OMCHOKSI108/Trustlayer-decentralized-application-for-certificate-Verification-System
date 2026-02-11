@@ -160,10 +160,10 @@ const UniversitySearch = ({ value, onChange }) => {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
-      if (query && query.length > 2 && showDropdown && query !== value) {
+      if (query && query.length > 2 && showDropdown) {
         setIsSearching(true);
         try {
-          const res = await api.get(`/universities/search?name=${query}`);
+          const res = await api.get(`/universities/search?name=${encodeURIComponent(query)}`);
           setResults(res.data.results || []);
         } catch (error) {
           console.error("Search failed", error);
@@ -175,7 +175,7 @@ const UniversitySearch = ({ value, onChange }) => {
       }
     }, 500);
     return () => clearTimeout(delayDebounceFn);
-  }, [query, showDropdown, value]);
+  }, [query, showDropdown]);
 
   const handleSelect = (uniName) => {
     setQuery(uniName);
