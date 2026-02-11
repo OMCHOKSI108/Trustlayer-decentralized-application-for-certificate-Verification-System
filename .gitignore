@@ -4,3 +4,4 @@ backend/config/contractData.json
 blockchain/artifacts/
 blockchain/cache/
 client/dist/
+STARTUP_COMMANDS.txt
