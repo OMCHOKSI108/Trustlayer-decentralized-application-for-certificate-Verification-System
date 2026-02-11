@@ -326,7 +326,6 @@ ADMIN_EMAIL="admin@yourdomain.com"
 ADMIN_PASSWORD="a_strong_admin_password"
 ```
 
-> **Security Note:** Never commit your `.env` file. Ensure it is listed in `.gitignore`.
 
 ---
 
