@@ -34,6 +34,11 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/certificates", require("./routes/certificateRoutes"));
 app.use("/api/verify", require("./routes/verifyRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/contact", require("./routes/contactRoutes"));
+app.use("/api/contact", require("./routes/contactRoutes"));
+app.use("/api/universities", require("./routes/universityRoutes"));
+// Public Routes (No Auth)
+app.use("/api/public", require("./routes/publicRoutes"));
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -57,7 +62,7 @@ app.get("/api/seed-admin", async (req, res) => {
 });
 
 // Start server only when running locally (Vercel manages the server in production)
-if (process.env.VERCEL !== "1") {
+if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   connectDB().then(() => {
     app.listen(PORT, () => {
