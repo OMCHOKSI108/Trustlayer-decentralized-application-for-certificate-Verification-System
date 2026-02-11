@@ -16,6 +16,7 @@ import AllCertificates from "./pages/AllCertificates";
 import VerifyEmail from "./pages/VerifyEmail";
 import Profile from "./pages/Profile";
 import PublicVerify from "./pages/PublicVerify";
+import ForgotPassword from "./pages/ForgotPassword";
 
 // Footer Pages
 import About from "./pages/About";
@@ -59,6 +60,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
+        <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" /> : <ForgotPassword />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/public-verify" element={<PublicVerify />} />
         <Route path="/public-verify/:certId" element={<PublicVerify />} />
