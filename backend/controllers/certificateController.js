@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 const Certificate = require("../models/Certificate");
-const { generateHash, hashToBytes32 } = require("../utils/hashGenerator");
+const { generateHashFromBuffer, hashToBytes32 } = require("../utils/hashGenerator");
 const { getContract } = require("../config/blockchain");
 
 // Issue a new certificate (University only)
@@ -16,7 +17,7 @@ const issueCertificate = async (req, res) => {
     const certId = "CERT-" + uuidv4().slice(0, 8).toUpperCase();
 
     // Generate SHA-256 hash from the ACTUAL file buffer
-    const sha256Hash = generateHash(file.buffer);
+    const sha256Hash = generateHashFromBuffer(file.buffer);
 
     // Store hash on blockchain
     const contract = getContract();
@@ -28,6 +29,11 @@ const issueCertificate = async (req, res) => {
     const tx = await contract.issueCertificate(certId, bytes32Hash);
     const receipt = await tx.wait();
 
+    // Generate QR Code
+    const QRCode = require("qrcode");
+    const verificationUrl = `${process.env.CLIENT_URL}/public-verify/${certId}`;
+    const qrImage = await QRCode.toDataURL(verificationUrl);
+
     // Save minimal record to MongoDB
     const certificate = await Certificate.create({
       certId,
@@ -35,6 +41,8 @@ const issueCertificate = async (req, res) => {
       txHash: receipt.hash,
       blockNumber: receipt.blockNumber,
       issuedBy: req.user._id,
+      qrCode: qrImage,
+      expiryDate: req.body.expiryDate || null,
     });
 
     res.status(201).json({
@@ -42,6 +50,7 @@ const issueCertificate = async (req, res) => {
       certificate: {
         certId: certificate.certId,
         txHash: certificate.txHash,
+        qrCode: certificate.qrCode,
       },
     });
   } catch (error) {
@@ -149,9 +158,109 @@ const getStats = async (req, res) => {
     });
     const revokedCount = await Certificate.countDocuments({ ...query, revoked: true });
 
-    res.json({ total, today: todayCount, revoked: revokedCount });
+    // Check for expired stats
+    // Note: isExpired might not be updated if it's just based on date and not a cron job.
+    // relying on expiryDate < Date.now() OR isExpired = true
+    const expiredCount = await Certificate.countDocuments({
+      ...query,
+      $or: [
+        { isExpired: true },
+        { expiryDate: { $lt: new Date() } }
+      ]
+    });
+
+    res.json({ total, today: todayCount, revoked: revokedCount, expired: expiredCount });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Bulk issue certificates from CSV
+const bulkIssue = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "CSV file is required" });
+  }
+
+  const results = [];
+  const errors = [];
+  const csv = require("csv-parser");
+  const stream = require("stream");
+  const QRCode = require("qrcode");
+
+  const bufferStream = new stream.PassThrough();
+  bufferStream.end(req.file.buffer);
+
+  try {
+    const contract = getContract();
+    if (!contract) throw new Error("Blockchain connection failed");
+
+    const processRow = async (row) => {
+      try {
+        // Expected columns: studentName, courseName, studentEmail, (optional) expiryDate
+        // We generate a unique certId for each
+        const certId = "CERT-" + uuidv4().slice(0, 8).toUpperCase();
+
+        // Generate a hash based on the content (since we don't have individual files)
+        // In a real bulk issue, we might generate a PDF here. base64 -> hash
+        // For now, we hash the stringified row data as a proxy for the 'document content'
+        const contentToHash = JSON.stringify(row) + certId;
+        const sha256Hash = crypto.createHash("sha256").update(contentToHash).digest("hex");
+        const bytes32Hash = hashToBytes32(sha256Hash);
+
+        // Blockchain TX
+        const tx = await contract.issueCertificate(certId, bytes32Hash);
+        const receipt = await tx.wait();
+
+        // QR Code
+        const verificationUrl = `${process.env.CLIENT_URL}/public-verify/${certId}`;
+        const qrImage = await QRCode.toDataURL(verificationUrl);
+
+        // DB Save
+        await Certificate.create({
+          certId,
+          sha256Hash,
+          txHash: receipt.hash,
+          blockNumber: receipt.blockNumber,
+          issuedBy: req.user._id,
+          qrCode: qrImage,
+          expiryDate: row.expiryDate || null,
+          studentName: row.studentName,
+        });
+
+        results.push({ certId, studentName: row.studentName, status: "issued" });
+      } catch (err) {
+        console.error("Row error:", err);
+        errors.push({ row, error: err.message });
+      }
+    };
+
+    const rows = [];
+    bufferStream
+      .pipe(csv())
+      .on("data", (data) => rows.push(data))
+      .on("end", async () => {
+        // Process sequentially to manage nonce/concurrency if needed, 
+        // though await inside loop handles it generally.
+        for (const row of rows) {
+          await processRow(row);
+        }
+
+        res.json({
+          message: "Bulk processing completed",
+          total: rows.length,
+          successful: results.length,
+          failed: errors.length,
+          results,
+          errors,
+        });
+      })
+      .on("error", (err) => {
+        res.status(500).json({ message: "CSV parsing error" });
+      });
+
+  } catch (error) {
+    console.error("Bulk issue error:", error);
+    res.status(500).json({ message: "Bulk issue functionality failed" });
   }
 };
 
@@ -161,4 +270,5 @@ module.exports = {
   getCertificateById,
   revokeCertificate,
   getStats,
+  bulkIssue,
 };
