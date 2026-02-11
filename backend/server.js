@@ -8,7 +8,11 @@ dotenv.config();
 const app = express();
 
 // Middleware
-const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173"].filter(Boolean);
+const allowedOrigins = [
+  "https://trustlayer-decentralized-applicatio-five.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) callback(null, true);

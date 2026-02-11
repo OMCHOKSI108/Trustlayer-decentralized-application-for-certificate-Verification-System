@@ -14,7 +14,8 @@ const transporter = nodemailer.createTransport({
  * @param {string} token - verification token
  */
 const sendVerificationEmail = async (to, token) => {
-  const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+  const clientUrl = process.env.CLIENT_URL || "https://trustlayer-decentralized-applicatio-five.vercel.app";
+  const verifyUrl = `${clientUrl}/verify-email?token=${token}`;
 
   const mailOptions = {
     from: `"TrustLayer" <${process.env.EMAIL_ID}>`,
