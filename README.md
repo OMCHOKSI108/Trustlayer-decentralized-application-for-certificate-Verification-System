@@ -24,6 +24,7 @@
 - [About the Project](#about-the-project)
 - [Key Features](#key-features)
 - [System Architecture](#system-architecture)
+- [Screenshots](#screenshots)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
@@ -135,6 +136,28 @@ sequenceDiagram
     S->>DB: Log verification attempt
     S-->>I: Verification result (valid/invalid/revoked)
 ```
+
+---
+
+## Screenshots
+
+### Admin Dashboard
+<div align="center">
+  <img src="docs/admin.png" alt="Admin Dashboard" width="800"/>
+  <p><em>Admin dashboard showing system overview and user management controls</em></p>
+</div>
+
+### User Management (Admin View)
+<div align="center">
+  <img src="docs/users_admin.png" alt="User Management Admin View" width="800"/>
+  <p><em>Admin interface for managing users and institution approvals</em></p>
+</div>
+
+### Certificate Verification
+<div align="center">
+  <img src="docs/verified.png" alt="Certificate Verification" width="800"/>
+  <p><em>Certificate verification interface showing blockchain-backed authenticity check</em></p>
+</div>
 
 ---
 
