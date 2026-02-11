@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema(
     verificationTokenExpiry: {
       type: Date,
     },
+    trustScore: {
+      type: Number,
+      default: 100,
+    },
   },
   { timestamps: true }
 );
