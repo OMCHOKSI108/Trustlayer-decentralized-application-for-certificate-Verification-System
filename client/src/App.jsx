@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "./context/AuthContext";
 import Layout from "./components/Layout";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -14,6 +15,14 @@ import ManageUsers from "./pages/ManageUsers";
 import AllCertificates from "./pages/AllCertificates";
 import VerifyEmail from "./pages/VerifyEmail";
 import Profile from "./pages/Profile";
+import PublicVerify from "./pages/PublicVerify";
+
+// Footer Pages
+import About from "./pages/About";
+import Blog from "./pages/Blog";
+import Careers from "./pages/Careers";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 function ProtectedRoute({ children, roles }) {
   const { user, loading } = useAuth();
@@ -46,30 +55,42 @@ function App() {
     <>
       <Toaster position="top-right" />
       <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/public-verify" element={<PublicVerify />} />
+        <Route path="/public-verify/:certId" element={<PublicVerify />} />
 
-        <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-          <Route index element={<Navigate to="/dashboard" />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="profile" element={<Profile />} />
+        {/* Footer Pages */}
+        <Route path="/about" element={<About />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/careers" element={<Careers />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
 
           {/* University routes */}
-          <Route path="issue" element={<ProtectedRoute roles={["university"]}><IssueCertificate /></ProtectedRoute>} />
-          <Route path="my-certificates" element={<ProtectedRoute roles={["university"]}><MyCertificates /></ProtectedRoute>} />
+          <Route path="/issue" element={<ProtectedRoute roles={["university"]}><IssueCertificate /></ProtectedRoute>} />
+          <Route path="/my-certificates" element={<ProtectedRoute roles={["university"]}><MyCertificates /></ProtectedRoute>} />
 
           {/* User/Employer routes */}
-          <Route path="verify" element={<ProtectedRoute roles={["user", "admin"]}><VerifyCertificate /></ProtectedRoute>} />
-          <Route path="verification-history" element={<ProtectedRoute roles={["user", "admin"]}><VerificationHistory /></ProtectedRoute>} />
+          <Route path="/verify" element={<ProtectedRoute roles={["user", "admin", "university"]}><VerifyCertificate /></ProtectedRoute>} />
+          <Route path="/verification-history" element={<ProtectedRoute roles={["user", "admin", "university"]}><VerificationHistory /></ProtectedRoute>} />
 
           {/* Admin routes */}
-          <Route path="admin" element={<ProtectedRoute roles={["admin"]}><AdminDashboard /></ProtectedRoute>} />
-          <Route path="admin/users" element={<ProtectedRoute roles={["admin"]}><ManageUsers /></ProtectedRoute>} />
-          <Route path="admin/certificates" element={<ProtectedRoute roles={["admin"]}><AllCertificates /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute roles={["admin"]}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute roles={["admin"]}><ManageUsers /></ProtectedRoute>} />
+          <Route path="/admin/certificates" element={<ProtectedRoute roles={["admin"]}><AllCertificates /></ProtectedRoute>} />
         </Route>
 
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        {/* Catch-all redirect */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
   );
